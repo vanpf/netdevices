@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block titile%}Devices{% endblock %}
+
+{% block content %}
+
+<table border="1 px">
+    <tr>
+        <td>device</td><td>name</td><td>state</td><td>ip</td><td>mask</td>
+        <td>actions</td>
+    </tr>
+    {% for d in devices %}
+        <tr>
+            <td>{{d['id']}}</td><td>{{d['name']}}</td><td>{{d['state']}}</td>
+            <td> <input id="{{d['id']}}" class="ip" type="text" name="" value="{{d['ip']}}"> </td>
+            <td>{{d['mask']}}</td>
+            <td> <a id="a{{d['id']}}" href="">edit</a> <a href="/clear/{{d['id']}}">clear</a> </td>
+        </tr>
+    {% endfor %}
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $(".ip").keypress(function() {
+
+            var ip = $(this).val();
+            console.log(ip)
+            var id = $(this).attr('id');
+
+            $.ajax({
+                type: "POST",
+                url: "/validate",
+                data: "ip="+ip+'&id='+id,
+                success: function(data){
+                    if (data == ""){
+                        $("input#"+id).css("background-color", "#F08080")
+                        $("#a"+id).css("color", "black")
+                        $("#a"+id).attr("href", "")
+                    } else {
+                        $("input#"+id).css("background-color", "#98FB98")
+                        $("#a"+id).css("color", "green")
+                        $("#a"+id).attr("href", data)
+                    }
+                }
+            });
+
+        });
+
+    });
+</script>
+
+{% endblock %}
